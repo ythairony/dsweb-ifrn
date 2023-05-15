@@ -1,15 +1,14 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse
-from django.template import loader
-from .models import Pergunta
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from .models import Pergunta, Alternativa
 
 
 # Create your views here.
 def index(request):
     lista_perguntas = Pergunta.objects.all()
-    template = loader.get_template('enquetes/index.html')
     context = {'lista_perguntas': lista_perguntas, }
-    return HttpResponse(template.render(context, request))
+    return render(request, 'enquetes/index.html', context)
 
 
 def detalhes(request, pergunta_id):
@@ -18,10 +17,21 @@ def detalhes(request, pergunta_id):
 
 
 def votacao(request, pergunta_id):
-    resposta = "VOTAÇÃO da Enquete de número %s"
-    return HttpResponse(resposta % pergunta_id)
-
+    pergunta = get_object_or_404(Pergunta, pk=pergunta_id)
+    try:
+        id_alternativa = request.POST['escolha']
+        alt_selecionada = pergunta.alternativa_set.get(pk=id_alternativa)
+    except (KeyError, Alternativa.DoesNoteExist):
+        contexto = {
+            'pergunta':pergunta,
+            'error': 'Você precisa selecionar uma alternativa'
+        }
+        return render(request, 'enquetes/detalhes.html', contexto)
+    else:
+        alt_selecionada.quant_votos += 1
+        alt_selecionada.save()
+        return HttpResponseRedirect(reverse('enquetes:resultado', args=(pergunta.id,)))
 
 def resultado(request, pergunta_id):
-    resposta = "RESULTADOS da Enquete de número %s"
-    return HttpResponse(resposta % pergunta_id)
+    pergunta = get_object_or_404(Pergunta, pk=pergunta_id)
+    return render(request, 'enquetes/resultado.html', {'pergunta':pergunta})

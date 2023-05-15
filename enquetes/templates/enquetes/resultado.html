@@ -10,20 +10,13 @@
     <h1>Aplicação de Enquetes</h1>
     <h3>Detalhes da enquetes #{{ pergunta.id }}</h3>
     <h3>{{ pergunta.enunciado }}</h3>
-    {% if error %}
-        <p><b>{{ error }}</b></p>
-    {% endif %}
-    <form method="post" action="{% url 'enquetes:votacao' pergunta.id %}">
-    {% csrf_token %}
     <ul>
         {% for alt in pergunta.alternativa_set.all %}
-            <input type="radio" name="escolha" value="{{ alt.id }}" id="alt{{ forloop.counter }}"/>
-            <label for="alt{{ forloop.counter }}">{{ alt.texto }}</label><br/>
+            <li>{{ alt.texto }} -- {{ alt.quant_votos }} voto{{ alt.quant_votos | pluralize }}</li>
         {% endfor %}
     </ul>
-    <input type="submit" value="Registrar voto"/>
-    </form>
     <hr/>
     <a href= "{% url 'enquetes:index' %}">Voltar</a>
+    <a href= "{% url 'enquetes:detalhes' pergunta.id %}">Votar novamente!</a>
  </body>
 </html>
