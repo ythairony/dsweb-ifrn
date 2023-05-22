@@ -8,6 +8,7 @@
 </head>
 <body>
     <h1>Aplicação de Enquetes</h1>
+    <h2>Listagem ddas Enquetes ENCERRADAS</h2>
     {% if lista_perguntas %}
         <ul>
             {% for pergunta in lista_perguntas %}
@@ -17,9 +18,9 @@
             {% endfor %}
         </ul>
     {% else %}
-        <h3>Nenhuma enquete cadastrada até o momento.</h3>
+        <h3>Nenhuma enquete encerrada até o momento.</h3>
     {% endif %}
     <hr/>
-    <a href="{% url 'enquetes:encerradas' %}">Listar enquetes encerradas</a>
+    <a href="{% url 'enquetes:index' %}">Voltar</a>
 </body>
 </html>

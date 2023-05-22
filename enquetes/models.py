@@ -6,6 +6,7 @@ from django.utils import timezone
 class Pergunta(models.Model):
     enunciado = models.CharField(max_length=150)
     data_pub = models.DateTimeField('Data de publicação')
+    data_encerramento = models.DateField('Data de encerramento', null=True)
     def __str__(self):
         return self.enunciado
     def publicada_recentemente(self):

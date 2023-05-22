@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
+from django.utils import timezone
 from django.http import HttpResponseRedirect
 from .models import Pergunta, Alternativa
 
@@ -22,9 +23,18 @@ class IndexView(generic.ListView):
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
-        lista_perguntas = Pergunta.objects.order_by('-data_pub')
+        # lista_perguntas = Pergunta.objects.order_by('-data_pub')
+        lista_perguntas = Pergunta.objects.filter(data_encerramento__gte = timezone.now()).order_by('data_pub')
         contexto = {'lista_perguntas': lista_perguntas, }
         return render(request, 'enquetes/index.html', contexto)
+
+
+class EncerradasView(View):
+    def get(self, request, *args, **kwargs):
+        # lista_perguntas = Pergunta.objects.order_by('-data_pub')
+        lista_perguntas = Pergunta.objects.filter(data_encerramento__lt = timezone.now()).order_by('data_pub')
+        contexto = {'lista_perguntas': lista_perguntas, }
+        return render(request, 'enquetes/encerradas.html', contexto)
 
 '''
 def detalhes(request, pergunta_id):
