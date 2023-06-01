@@ -10,7 +10,16 @@ class Pergunta(models.Model):
     def __str__(self):
         return self.enunciado
     def publicada_recentemente(self):
-        return self.data_pub >= timezone.now() - datetime.timedelta(hours=48)
+        marco_48h_passado = timezone.now() - datetime.timedelta(hours=48)
+        agora = timezone.now()
+        return (self.data_pub <= agora) and (self.data_pub >= marco_48h_passado)
+    def total_de_votos(self):
+        total = 0
+        for alt in self.alternativa_set.all():
+            total += alt.quant_votos
+        return total
+    def alternativas_ordenadas(self):
+        return self.alternativa_set.order_by('-quant_votos')
 
 
 class Alternativa(models.Model):
@@ -19,3 +28,5 @@ class Alternativa(models.Model):
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE)
     def __str__(self):
         return self.texto
+    def porcentagem(self):
+        return (self.quant_votos / self.pergunta.total_de_votos()) * 100

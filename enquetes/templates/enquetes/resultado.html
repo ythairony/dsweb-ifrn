@@ -11,8 +11,8 @@
     <h3>Detalhes da enquetes #{{ pergunta.id }}</h3>
     <h3>{{ pergunta.enunciado }}</h3>
     <ul>
-        {% for alt in pergunta.alternativa_set.all %}
-            <li>{{ alt.texto }} -- {{ alt.quant_votos }} voto{{ alt.quant_votos | pluralize }}</li>
+        {% for alt in pergunta.alternativas_ordenadas %}
+            <li>{{ alt.texto }} -- {{ alt.quant_votos }} voto{{ alt.quant_votos | pluralize }} -- {{ alt.porcentagem | floatformat:0 }}% </li>
         {% endfor %}
     </ul>
     <hr/>

@@ -76,7 +76,7 @@ class VotacaoView(View):
         try:
             id_alternativa = request.POST['escolha']
             alt_selecionada = pergunta.alternativa_set.get(pk=id_alternativa)
-        except (KeyError, Alternativa.DoesNoteExist):
+        except (KeyError, Alternativa.DoesNotExist):
             contexto = {
                 'pergunta':pergunta,
                 'error': 'Você precisa selecionar uma alternativa'
