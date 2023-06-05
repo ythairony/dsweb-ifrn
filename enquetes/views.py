@@ -24,7 +24,11 @@ class IndexView(generic.ListView):
 class IndexView(View):
     def get(self, request, *args, **kwargs):
         # lista_perguntas = Pergunta.objects.order_by('-data_pub')
-        lista_perguntas = Pergunta.objects.filter(data_encerramento__gte = timezone.now()).order_by('data_pub')
+        lista_perguntas = Pergunta.objects.filter(
+            data_encerramento__gte = timezone.now()
+        ).filter(
+            data_pub__lte = timezone.now()
+        ).order_by('data_pub')
         contexto = {'lista_perguntas': lista_perguntas, }
         return render(request, 'enquetes/index.html', contexto)
 

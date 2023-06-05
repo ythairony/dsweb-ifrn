@@ -1,8 +1,68 @@
 import datetime
 from django.test import TestCase
 from django.utils import timezone
+from django.urls import reverse
 
 from .models import Pergunta
+
+
+def criar_pergunta(texto, dias):
+    """
+    Criar uma isntância de pergunta com um dado enunciado e uma data
+    """
+    data = timezone.now() + datetime.timedelta(days=dias)
+    return Pergunta.objects.create(
+        enunciado=texto, data_pub=data,
+        data_encerramento = timezone.now() + datetime.timedelta(days=30)
+    )
+
+
+class IndexViewTest(TestCase):
+    def test_pergunta_com_data_futura(self):
+        """
+        Pergunta com data no futuro não deve ser exibida na Index
+        """
+        criar_pergunta('Pergunta no futuro', 1)
+        resposta = self.client.get(reverse('enquetes:index'))
+        self.assertContains(resposta, 'Nenhuma enquete cadastrada')
+        self.assertQuerysetEqual(resposta.context['lista_perguntas'], [])
+
+    def test_sem_perguntas_cadastradas(self):
+        """
+        Não havendo perguntas é exibida uma mensagem correspondente
+        """
+        resposta = self.client.get(reverse('enquetes:index'))
+        self.assertEqual(resposta.status_code, 200)
+        self.assertContains(resposta, 'Nenhuma enquete cadastrada')
+        self.assertQuerysetEqual(resposta.context['lista_perguntas'], [])
+
+    def test_pergunta_com_data_passada(self):
+        """
+        Pergunta com data no passado são exibidos normalmente
+        """
+        criar_pergunta('Pergunta no passado', -1)
+        resposta = self.client.get(reverse('enquetes:index'))
+        self.assertEqual(resposta.status_code, 200)
+        self.assertContains(resposta, 'Pergunta no passado')
+        self.assertQuerysetEqual(
+            resposta.context['lista_perguntas'],
+            ['<Pergunta: Pergunta no passado>']
+        )
+
+    def test_pergunta_com_data_futura_e_passada(self):
+        """
+        Só deve ser exibida a pergunta com data no passado
+        """
+        criar_pergunta('Pergunta no passado', -1)
+        criar_pergunta('Pergunta no futuro', 1)
+        resposta = self.client.get(reverse('enquetes:index'))
+        self.assertEqual(resposta.status_code, 200)
+        self.assertContains(resposta, 'Pergunta no passado')
+        self.assertQuerysetEqual(
+            resposta.context['lista_perguntas'],
+            ['<Pergunta: Pergunta no passado>'])
+
+
 
 class PerguntaModelTest(TestCase):
     def test_publicada_recentemente_com_pergunta_no_futuro(self):
