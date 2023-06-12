@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from .models import Pergunta, Alternativa
 
 
@@ -54,6 +54,8 @@ class DetalhesView(generic.DetailView):
 class DetalhesView(View):
     def get(self, request, *args, **kwargs):
         pergunta = get_object_or_404(Pergunta, pk=kwargs['pk'])
+        if pergunta.data_pub > timezone.now():
+            raise Http404('Nenhuma pergunta com tal identificação.')
         return render(request, 'enquetes/detalhes.html', {'pergunta':pergunta})
 
 '''

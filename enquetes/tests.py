@@ -17,6 +17,18 @@ def criar_pergunta(texto, dias):
     )
 
 
+class DetalhesViewTest(TestCase):
+    def test_com_pergunta_no_futuro(self):
+        """
+        Ao tentar exibir detalhes de uma pergunta no futuro recebemos um 404
+        """
+        pergunta = criar_pergunta('Pergunta futura', 5)
+        url = reverse('enquetes:detalhes', args=(pergunta.id,))
+        resposta = self.client.get(url)
+        self.assertEqual(resposta.status_code, 404)
+
+
+
 class IndexViewTest(TestCase):
     def test_pergunta_com_data_futura(self):
         """
