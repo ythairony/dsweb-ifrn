@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #apps
     'enquetes.apps.EnquetesConfig',
+    'principal.apps.PrincipalConfig',
+    'caridade.apps.CaridadeConfig',
 ]
 
 MIDDLEWARE = [

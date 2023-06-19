@@ -1,0 +1,12 @@
+li a {
+    color: blue;
+}
+
+h1 {
+    color: #ffcbdb;
+}
+
+body {
+    background: white url("../imgs/saojoao.png") no-repeat;
+    background-size: cover;
+}
