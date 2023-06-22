@@ -21,6 +21,10 @@ class Pergunta(models.Model):
     def alternativas_ordenadas(self):
         return self.alternativa_set.order_by('-quant_votos')
 
+    publicada_recentemente.admin_order_field = 'data_pub'
+    publicada_recentemente.boolean = True
+    publicada_recentemente.short_description = 'Recente?'
+
 
 class Alternativa(models.Model):
     texto = models.CharField(max_length=80)
