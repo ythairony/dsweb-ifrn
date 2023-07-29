@@ -11,7 +11,9 @@
     <h3>Detalhes da enquetes #{{ evento.id }}</h3>
     <h3>{{ evento.nome }}</h3>
     <ul>
-
+        {% for item in evento.item_set.all %}
+        <label for="item{{ forloop.counter }}">{{ item.descricao }} -- Preço: R$ {{ item.valor | floatformat:2 }}</label><br/>
+        {% endfor %}
     </ul>
     <hr/>
     <a href= "{% url 'caridade:index' %}">Voltar</a>
