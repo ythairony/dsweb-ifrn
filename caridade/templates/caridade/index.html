@@ -3,7 +3,20 @@
         <title>Evento de Caridade</title>
     </head>
     <body>
-        <h1>Evento de Caridade Quero Ajuda</h1>
+        <h1>Evento de Caridade Q Ajuda</h1>
+        <hr/>
+        {% if lista_eventos %}
+            <ul>
+                {% for evento in lista_eventos %}
+                    <li><a href="{% url 'caridade:detalhes' evento.id %}">
+                        {{ evento.nome }}</a> data início: {{ evento.data_inicio }} data de término: {{ evento.data_fim }} - organizado por {{ evento.usuario.username }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h3>Nenhum evento disponível no momento</h3>
+        {% endif %}
+
         <hr/>
         &copy; DSWeb/TADS/CNAT/IFRN 2023
     </body>
